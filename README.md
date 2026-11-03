@@ -17,4 +17,11 @@ This repository contains the official AI agent context files for developing nf-c
 Adding or editing files in this repository requires approval from an nf-core core member (or maintainer with special permissions) and can only be done via pull requests.
 
 ## Files in this repository
-- `AGENTS.md`: main agent context file containing instructions for the nf-core pipeline template.
+- [`resources/pipeline/AGENTS.md`](resources/pipeline/AGENTS.md): main agent context file containing instructions for the nf-core pipeline template.
+- [`resources/skills/migrating-nf-core-utils/`](resources/skills/migrating-nf-core-utils/SKILL.md): migrate vendored pipeline utilities to the nf-core-utils Nextflow plugin, update plugin pins and diagnose plugin function errors.
+
+## Using skills
+
+Copy the whole skill directory from `resources/skills/` into your agent's skill directory, for example `.agents/skills/` or `.claude/skills/` in a pipeline checkout. Keep its references and licence file together. Skills supplement the pipeline's own agent instructions.
+
+The migration skill is adapted from [maxulysse/nf-core-utils-migration](https://github.com/maxulysse/nf-core-utils-migration) by Maxime U Garcia. Its original MIT notice is preserved in the [skill's LICENSE](resources/skills/migrating-nf-core-utils/LICENSE), and its source revision is recorded in the skill.
