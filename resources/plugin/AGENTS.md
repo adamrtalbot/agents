@@ -20,12 +20,12 @@ Prose includes all .md files, description fields in meta files, and comments in 
 
 ## Code Comments
 
-Code exists to show _how_; comments carry _why_ — a non-obvious constraint, deliberate deviation, gotcha, or workaround. Apply this discipline across all projects:
+Code exists to show _how_; comments carry _why_, such as a non-obvious constraint, deliberate deviation, gotcha, or workaround. Apply this discipline across all projects:
 
 - Default to no comment. Write comments only when code alone cannot convey the reasoning.
 - Never narrate the code ("loop over users", "parse the body") or restate names, types, or signatures.
 - Never narrate the change ("fixed X", "updated to Y", "as requested"). A comment must read correctly to someone seeing the file fresh; change context belongs in the commit message.
-- Delete by default. A comment restating a decision the code already reflects is dead weight. Keep inline only what readers need _at that line_ and cannot get from the code — a non-obvious invariant/constraint or a cross-file sync obligation.
+- Delete by default. A comment restating a decision the code already reflects is dead weight. Keep inline only what readers need _at that line_ and cannot get from the code, such as a non-obvious invariant/constraint or a cross-file sync obligation.
 - Comments must stand on their own with any link removed. Encode the substance; never use a pointer as a substitute. Avoid point-in-time artifacts (specs, section numbers, design docs) that rot over time. Fine: a maintained doc/README at a stable path as breadcrumb context.
 - Apply Occam's razor to every comment you keep. A genuine _why_ can still be 3x too long. Keep only the one non-obvious fact a reader needs _at that line_, in the fewest words. Cut the mechanism the code shows, downstream consequences, and justification-of-the-justification.
 - A one-line summary on a public function/endpoint is fine; inline restatement of a single clear line never is.
@@ -58,6 +58,7 @@ The directory you are working on will match one of these layouts.
 │       └── main.nf.test
 ├── tests_noplugins/                 // Tests that run without plugin dependencies
 ├── build.sh                         // Build script (wraps mvn)
+├── mise.toml                        // Tool versions and project tasks
 └── test.sh                          // Test script (wraps nf-test with --plugins)
 ```
 
@@ -66,14 +67,11 @@ The directory you are working on will match one of these layouts.
 ```text
 .
 ├── build.gradle                     // Gradle build file
-├── Makefile                         // Convenience commands wrapping Gradle
+├── mise.toml                        // Tool versions and project tasks
 ├── src/
 │   ├── main/
-│   │   ├── groovy/                  // Groovy source code
-│   │   │   └── nfcore/plugin/       // Package with plugin classes
-│   │   └── resources/
-│   │       └── META-INF/
-│   │           └── extensions.idx   // Extension point registration
+│   │   └── groovy/                  // Groovy source code
+│   │       └── nfcore/plugin/       // Package with plugin classes
 │   └── test/
 │       └── groovy/                  // Unit tests (Spock)
 └── validation/                      // Integration tests
@@ -83,7 +81,7 @@ If a file does not follow the layout above, you **MUST** verify with the user be
 
 ## Code style
 
-- Static analysis tools run on every build. For Maven plugins: checkstyle, PMD, and SpotBugs. For Gradle plugins: SpotBugs. Fix all violations before pushing.
+- Static analysis tools run on every Maven plugin build: checkstyle, PMD, and SpotBugs. Fix all violations before pushing.
 - Throw exceptions instead of calling `System.exit()`.
 - Do not swallow exceptions silently. Log and rethrow, or let the caller handle it.
 - No raw types. Use `List<?>` or the concrete type.
@@ -93,9 +91,8 @@ If a file does not follow the layout above, you **MUST** verify with the user be
 ## Build and test
 
 - You **MUST** verify the project builds and tests pass before committing or pushing.
-- For Maven plugins: run `mvn clean verify` or `./build.sh`.
-- For Gradle plugins: run `make assemble` or `./gradlew assemble`.
-- To run the full test suite: use `./test.sh` (nf-test plugins) or `make test` (Nextflow plugins).
+- Build with `mise run assemble`.
+- Run the full test suite with `mise run test`.
 - If a build command fails, ask the user for help. You **MUST NOT** generate build output files manually.
 
 ## git and branch policy
@@ -127,10 +124,6 @@ The default branch is `main`.
   - If a push is rejected by the remote, notify the user and wait.
 - Before pushing, run the build and tests (if applicable for your project type). Resolve all errors and all possible warnings. Repeat until there are no solvable outstanding issues.
 - If you know the code will cause issues or you intend to push more changes, you **SHOULD** add `[skip ci]` at the end of the commit title. You **SHOULD** omit this tag for final review-ready commits.
-
-### For plugins specifically
-
-- Before pushing, you **MUST** run the project build and tests (see "Build and test" above), resolve all errors and all possible warnings. Repeat until there are no solvable outstanding issues.
 
 ## PR procedure
 

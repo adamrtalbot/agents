@@ -33,6 +33,7 @@ The directory you are working on will match one of these layouts.
 │       └── main.nf.test
 ├── tests_noplugins/                 // Tests that run without plugin dependencies
 ├── build.sh                         // Build script (wraps mvn)
+├── mise.toml                        // Tool versions and project tasks
 └── test.sh                          // Test script (wraps nf-test with --plugins)
 ```
 
@@ -41,14 +42,11 @@ The directory you are working on will match one of these layouts.
 ```text
 .
 ├── build.gradle                     // Gradle build file
-├── Makefile                         // Convenience commands wrapping Gradle
+├── mise.toml                        // Tool versions and project tasks
 ├── src/
 │   ├── main/
-│   │   ├── groovy/                  // Groovy source code
-│   │   │   └── nfcore/plugin/       // Package with plugin classes
-│   │   └── resources/
-│   │       └── META-INF/
-│   │           └── extensions.idx   // Extension point registration
+│   │   └── groovy/                  // Groovy source code
+│   │       └── nfcore/plugin/       // Package with plugin classes
 │   └── test/
 │       └── groovy/                  // Unit tests (Spock)
 └── validation/                      // Integration tests
@@ -58,7 +56,7 @@ If a file does not follow the layout above, you **MUST** verify with the user be
 
 ## Code style
 
-- Static analysis tools run on every build. For Maven plugins: checkstyle, PMD, and SpotBugs. For Gradle plugins: SpotBugs. Fix all violations before pushing.
+- Static analysis tools run on every Maven plugin build: checkstyle, PMD, and SpotBugs. Fix all violations before pushing.
 - Throw exceptions instead of calling `System.exit()`.
 - Do not swallow exceptions silently. Log and rethrow, or let the caller handle it.
 - No raw types. Use `List<?>` or the concrete type.
@@ -68,9 +66,8 @@ If a file does not follow the layout above, you **MUST** verify with the user be
 ## Build and test
 
 - You **MUST** verify the project builds and tests pass before committing or pushing.
-- For Maven plugins: run `mvn clean verify` or `./build.sh`.
-- For Gradle plugins: run `make assemble` or `./gradlew assemble`.
-- To run the full test suite: use `./test.sh` (nf-test plugins) or `make test` (Nextflow plugins).
+- Build with `mise run assemble`.
+- Run the full test suite with `mise run test`.
 - If a build command fails, ask the user for help. You **MUST NOT** generate build output files manually.
 
 <!-- shared: git and branch policy -->
@@ -84,10 +81,6 @@ The default branch is `main`.
 <!-- shared: Commit rules and routine -->
 
 <!-- shared: Push routine -->
-
-### For plugins specifically
-
-- Before pushing, you **MUST** run the project build and tests (see "Build and test" above), resolve all errors and all possible warnings. Repeat until there are no solvable outstanding issues.
 
 <!-- shared: PR procedure -->
 

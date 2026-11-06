@@ -128,7 +128,7 @@ This repository has at least 3 git branches: `main` (or `master`), `dev`, and `T
 
 ### For pipelines specifically
 
-- Each PR requires reviews (1 for dev, 2 for main) and passing CI before merging.
+- PRs to `dev` require 1 review. PRs to `main` require 2 reviews.
 
 <!-- shared: Agent self-disclosure -->
 
@@ -139,5 +139,6 @@ This repository has at least 3 git branches: `main` (or `master`), `dev`, and `T
 - Each pipeline **MUST** have at least 1 test case.
 - Tests have a standardized syntax, with setup (optional), input ("when"), and assertion ("then") sections.
 - Tests at a path can be executed with `nf-test test {path}`.
+- Update snapshots with `nf-test test --profile=+{docker|singularity|conda} --verbose --update-snapshot`.
 
 <!-- shared: References -->

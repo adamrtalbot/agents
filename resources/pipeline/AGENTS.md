@@ -20,12 +20,12 @@ Prose includes all .md files, description fields in meta files, and comments in 
 
 ## Code Comments
 
-Code exists to show _how_; comments carry _why_ — a non-obvious constraint, deliberate deviation, gotcha, or workaround. Apply this discipline across all projects:
+Code exists to show _how_; comments carry _why_, such as a non-obvious constraint, deliberate deviation, gotcha, or workaround. Apply this discipline across all projects:
 
 - Default to no comment. Write comments only when code alone cannot convey the reasoning.
 - Never narrate the code ("loop over users", "parse the body") or restate names, types, or signatures.
 - Never narrate the change ("fixed X", "updated to Y", "as requested"). A comment must read correctly to someone seeing the file fresh; change context belongs in the commit message.
-- Delete by default. A comment restating a decision the code already reflects is dead weight. Keep inline only what readers need _at that line_ and cannot get from the code — a non-obvious invariant/constraint or a cross-file sync obligation.
+- Delete by default. A comment restating a decision the code already reflects is dead weight. Keep inline only what readers need _at that line_ and cannot get from the code, such as a non-obvious invariant/constraint or a cross-file sync obligation.
 - Comments must stand on their own with any link removed. Encode the substance; never use a pointer as a substitute. Avoid point-in-time artifacts (specs, section numbers, design docs) that rot over time. Fine: a maintained doc/README at a stable path as breadcrumb context.
 - Apply Occam's razor to every comment you keep. A genuine _why_ can still be 3x too long. Keep only the one non-obvious fact a reader needs _at that line_, in the fewest words. Cut the mechanism the code shows, downstream consequences, and justification-of-the-justification.
 - A one-line summary on a public function/endpoint is fine; inline restatement of a single clear line never is.
@@ -178,7 +178,7 @@ This repository has at least 3 git branches: `main` (or `master`), `dev`, and `T
 
 ### For pipelines specifically
 
-- Each PR requires reviews (1 for dev, 2 for main) and passing CI before merging.
+- PRs to `dev` require 1 review. PRs to `main` require 2 reviews.
 
 ## Agent self-disclosure
 
@@ -198,6 +198,7 @@ Most projects use snapshot testing to verify output. These shared principles app
 - Each pipeline **MUST** have at least 1 test case.
 - Tests have a standardized syntax, with setup (optional), input ("when"), and assertion ("then") sections.
 - Tests at a path can be executed with `nf-test test {path}`.
+- Update snapshots with `nf-test test --profile=+{docker|singularity|conda} --verbose --update-snapshot`.
 
 ## References
 
