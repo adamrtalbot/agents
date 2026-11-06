@@ -20,6 +20,13 @@ Adding or editing files in this repository requires approval from an nf-core cor
 
 ## Files in this repository
 
-- `resources/AGENTS.md`: shared AI agent guidelines used across all nf-core projects (pipelines, plugins, modules, web, and tools).
-- `resources/pipeline/AGENTS.md`: agent context file containing instructions for nf-core pipeline repositories. Incorporates shared guidelines from `resources/AGENTS.md`.
-- `resources/plugin/AGENTS.md`: agent context file containing instructions for nf-core plugin repositories. Incorporates shared guidelines from `resources/AGENTS.md`.
+- [`resources/AGENTS.md`](resources/AGENTS.md): shared AI agent guidelines used across all nf-core projects (pipelines, plugins, modules, web, and tools).
+- [`resources/pipeline/AGENTS.md`](resources/pipeline/AGENTS.md): agent context file containing instructions for nf-core pipeline repositories. Incorporates shared guidelines from `resources/AGENTS.md`.
+- [`resources/plugin/AGENTS.md`](resources/plugin/AGENTS.md): agent context file containing instructions for nf-core plugin repositories. Incorporates shared guidelines from `resources/AGENTS.md`.
+- [`resources/skills/migrating-nf-core-utils/`](resources/skills/migrating-nf-core-utils/SKILL.md): migrate vendored pipeline utilities to the nf-core-utils Nextflow plugin, update plugin pins and diagnose plugin function errors.
+
+## Using skills
+
+Copy the whole skill directory from `resources/skills/` into your agent's skill directory, for example `.agents/skills/` or `.claude/skills/` in a pipeline checkout. Keep its references and licence file together. Skills supplement the pipeline's own agent instructions.
+
+The migration skill is adapted from [maxulysse/nf-core-utils-migration](https://github.com/maxulysse/nf-core-utils-migration) by Maxime U Garcia. Its original MIT notice is preserved in the [skill's LICENSE](resources/skills/migrating-nf-core-utils/LICENSE), and its source revision is recorded in the skill.
