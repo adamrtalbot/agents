@@ -1,6 +1,6 @@
 # nf-core: Shared AI agent guidelines
 
-This document contains shared guidelines used by AI agents across nf-core projects. Project-specific AGENTS.md files reference these standards in addition to project-specific rules.
+This document contains shared guidelines used by AI agents across nf-core projects. Project-specific AGENTS.md files are generated from these standards and add project-specific rules.
 
 ## Natural language
 
@@ -30,8 +30,6 @@ Code exists to show _how_; comments carry _why_ — a non-obvious constraint, de
 - Apply Occam's razor to every comment you keep. A genuine _why_ can still be 3x too long. Keep only the one non-obvious fact a reader needs _at that line_, in the fewest words. Cut the mechanism the code shows, downstream consequences, and justification-of-the-justification.
 - A one-line summary on a public function/endpoint is fine; inline restatement of a single clear line never is.
 - TODOs are fine and do not need issue IDs, but a TODO is a marker, not a substitute for doing the work in scope.
-
-See project-specific AGENTS.md files for language-specific comment guidance (e.g. Javadoc, Groovydoc, Nextflow comments).
 
 ## git and branch policy
 
@@ -78,8 +76,6 @@ Most projects use snapshot testing to verify output. These shared principles app
 - Most tests create at least 1 snapshot file. You **MUST NOT** edit snapshots manually.
 - If you expect the output to change (e.g. after a tool update), update the snapshot with the appropriate `--update-snapshot` flag. Only regenerate snapshots on the same CPU architecture as CI.
 - If a new output file has unstable content, add it to `.nftignore`.
-
-See project-specific AGENTS.md files for test structure, test locations, and execution commands relevant to your project type.
 
 ## References
 
