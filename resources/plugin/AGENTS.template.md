@@ -12,52 +12,14 @@ All AI agents and coding assistants **MUST** follow the rules in this document.
 
 ## Plugin structure
 
-The directory you are working on will match one of these layouts.
-
-### nf-test plugin (Java/Maven)
-
-```text
-.
-├── pom.xml                          // Maven build file
-├── src/
-│   ├── main/
-│   │   ├── java/                    // Java source code
-│   │   │   └── nfcore/nftest/utils/ // Package with utility classes
-│   │   └── resources/
-│   │       └── META-INF/
-│   │           └── nf-test-plugin   // Plugin registration (name, version, extension methods)
-│   └── test/
-│       └── java/                    // Unit tests
-├── tests/                           // nf-test test cases
-│   └── <functionName>/
-│       └── main.nf.test
-├── tests_noplugins/                 // Tests that run without plugin dependencies
-├── build.sh                         // Build script (wraps mvn)
-├── mise.toml                        // Tool versions and project tasks
-└── test.sh                          // Test script (wraps nf-test with --plugins)
-```
-
-### Nextflow plugin (Groovy/Gradle)
-
-```text
-.
-├── build.gradle                     // Gradle build file
-├── mise.toml                        // Tool versions and project tasks
-├── src/
-│   ├── main/
-│   │   └── groovy/                  // Groovy source code
-│   │       └── nfcore/plugin/       // Package with plugin classes
-│   └── test/
-│       └── groovy/                  // Unit tests (Spock)
-└── validation/                      // Integration tests
-```
-
-If a file does not follow the layout above, you **MUST** verify with the user before editing it.
+- `mise.toml`: pinned tools and project tasks, with checksums in `mise.lock`.
+- `src/main/`: plugin source code.
+- `src/test/`: unit tests.
+- `tests/` (nf-test plugins) or `validation/` (Nextflow plugins): integration tests.
 
 ## Code style
 
-- Static analysis tools run on every Maven plugin build: checkstyle, PMD, and SpotBugs. Fix all violations before pushing.
-- Throw exceptions instead of calling `System.exit()`.
+- You **SHOULD** throw exceptions instead of calling `System.exit()`.
 - Do not swallow exceptions silently. Log and rethrow, or let the caller handle it.
 - No raw types. Use `List<?>` or the concrete type.
 - Utility classes **MUST** have private constructors.
@@ -66,8 +28,11 @@ If a file does not follow the layout above, you **MUST** verify with the user be
 ## Build and test
 
 - You **MUST** verify the project builds and tests pass before committing or pushing.
-- Build with `mise run assemble`.
-- Run the full test suite with `mise run test`.
+- Install the pinned tools with `mise install --locked`.
+- Run unit tests with `mise run test`.
+- Run integration tests with `mise run validate`, which also builds the plugin.
+- Run builds and tests through `mise run`, not directly with Gradle, Maven or nf-test, so the pinned tools and project settings apply.
+- After changing `[tools]` in `mise.toml`, run `mise lock` and commit the lock files.
 - If a build command fails, ask the user for help. You **MUST NOT** generate build output files manually.
 
 <!-- shared: git and branch policy -->
@@ -91,7 +56,6 @@ The default branch is `main`.
 ### For plugins specifically
 
 - Each function **MUST** have at least one test case.
-- nf-test plugins: tests live in `tests/` as `main.nf.test` files, one per utility function. Tests use `nextflow_process` or `nextflow_pipeline` blocks with setup/when/then sections.
-- Nextflow plugins: unit tests live in `src/test/` using the Spock framework. Integration tests live in `validation/`.
+- Normalise unstable values in `.nf.test` files, not in `.snap` files.
 
 <!-- shared: References -->
