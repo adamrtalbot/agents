@@ -21,6 +21,7 @@ The conversion script is `scripts/convert.sh` in this skill's directory.
   ```
 
 - Drop any module that another PR already migrates or changes in `main.nf`. If a PR touches only other files in the module, such as `meta.yml`, keep the module but mention the overlap, because the migration also edits `meta.yml`.
+- Lint each candidate on master with `nf-core modules lint <module>`. CI lints every module the PR touches, so failures already on master become the PR's problem. Drop a module if the fix changes its interface. For example, `main_nf_ext_key: Invalid 'ext' keys detected: ext.suffix` means either removing `ext.suffix` or adding a `val suffix` input and updating every subworkflow that calls the module, which is out of scope here. Small fixes that don't change behaviour can stay in the batch, such as changing a stub's `echo | gzip` to `echo "" | gzip`.
 - Tell the user which modules you dropped and why before converting.
 
 ## 2. Set up
@@ -77,7 +78,7 @@ nextflow lint modules/nf-core/{<modules>}
 git add -A modules/ && uvx pre-commit run --files $(git diff --cached --name-only)
 ```
 
-Fix any new failure. Leave warnings that already existed on master, such as the deprecated `when` section or non-standard labels. `AGENTS.md` forbids editing `when`.
+Fix any new failure, plus the small failures from master you chose to fix in step 1. Leave warnings that already existed on master, such as the deprecated `when` section or non-standard labels. `AGENTS.md` forbids editing `when`.
 
 ## 5. Test
 
