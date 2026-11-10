@@ -53,8 +53,10 @@ The first `containers create` can reuse a cached build and write `build_id: ""` 
 
 Check every version bump before keeping it:
 
-- Compare the old and new version in `environment.yml`. `bump-versions` can pick an older release (foldseek 10.941cd33 went to 8.ef4e960). Revert any bump that isn't a newer version.
+- Compare the old and new version in `environment.yml`. `bump-versions` can pick an older or invalid release (foldseek 10.941cd33 went to 8.ef4e960, meryl went to "2013"). Revert any bump that isn't a newer version.
 - Check the version the tool reports in the snapshot. Some binaries report a different version from their package (graphmap 0.6.4 reports 0.6.5).
+- Check what the new release changed. metaphlan 4.2.6 removes `--bowtie2db` and `--biom`, and methyldackel 0.6.2 changes the md5s of `extract` output. Revert a bump like that unless the user wants it.
+- Without the old build-number pin, the solver can pick a newer build of the same version that reports its version differently. meryl 1.4.1 builds _1 and _2 report `branch HEAD +0 changes (r977 …)` where _0 reports `1.4.1`. If the data md5s match and only the version string differs, hard-code the version in `main.nf`, with a comment that it must be bumped together with `environment.yml`.
 
 If Wave can't build a module, the automatic bumps may be the cause. Before dropping it:
 
@@ -62,6 +64,8 @@ If Wave can't build a module, the automatic bumps may be the cause. Before dropp
 2. If that fails, run a local conda dry-run solve to find the dependency that conflicts, and bump only that one to the lowest version that solves. Record what you tried.
 
 A container that builds can still fail when it runs (summarizedexperiment 1.32.0 failed with `no package called 'GenomeInfoDbData'`). If the only fix is a tool version bump, ask the user before keeping it.
+
+A dependency the old image fixed implicitly can resolve to something incompatible once unpinned. metaphlan 4.1.1 resolved to python 3.14, which has no `distutils`, and crashed. Pinning python=3.10.14 and numpy=1.26.4, as in the old quay.io image, fixed it. If a migrated container crashes at import, compare its key runtime versions with the old image.
 
 If nothing works, drop the module:
 
