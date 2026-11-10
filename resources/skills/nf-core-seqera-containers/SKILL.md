@@ -49,6 +49,8 @@ The script leaves you with:
 - `.conda-lock/` files
 - updated `environment.yml` and snapshot version strings for any module that was bumped
 
+The first `containers create` can reuse a cached build and write `build_id: ""` with no `.conda-lock` file (glimpse2/chunk). Check with `grep -l 'build_id: ""' modules/nf-core/<module>/meta.yml` and run `convert.sh` again for any module it finds.
+
 Check every version bump before keeping it:
 
 - Compare the old and new version in `environment.yml`. `bump-versions` can pick an older release (foldseek 10.941cd33 went to 8.ef4e960). Revert any bump that isn't a newer version.
@@ -96,9 +98,11 @@ If a subworkflow fails before any process runs, run the same test on a clean cop
 
 Local runs on an arm64 Mac use the amd64 image under Rosetta, which is not the same as CI. Tools that write their own command line into the output, like featureCounts and gffread, record the full binary path under Rosetta but the bare command name on CI. A snapshot regenerated locally can then pass here and fail on every CI profile.
 
+Tools that need AVX2, such as glimpse-bio, fail under Rosetta with `Feature AVX2 not present on host`. CI is their only test, so say so in the PR.
+
 When a module's md5 changes:
 
-1. Look at the output file. If only a header line differs (a version or path), the data is unchanged.
+1. Look at the output file. If only a header line differs (a version or path), the data is unchanged. Outputs that record the CPU count also differ locally: concoct's `test_args.txt` has `threads=4` locally and `threads=2` on CI. If the thread count is the only difference, nothing changed.
 2. Ask the user whether to keep the module or drop it. The default rule for these batches is to drop any module whose snapshot changes.
 3. If they keep it, prefer making the assertion independent of the path over copying md5s from CI. For a BAM, snapshot the header with `@PG` lines removed, plus the records. `getReadsMD5()` alone failed lint on ivar/trim. Changing what a test checks needs the user's OK, and the PR should say why.
 4. Otherwise, push and let CI fail once. Then take the md5s from the CI nf-test log, check that docker, singularity and conda all agree, and put those values in the snapshot. Say in the PR that the md5s came from CI.
