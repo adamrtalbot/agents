@@ -98,6 +98,10 @@ nf-test test subworkflows/nf-core/<subworkflow>/tests --profile=+docker
 
 If a subworkflow fails before any process runs, run the same test on a clean copy of master (`git archive upstream/master | tar -x -C <scratch>`). If master fails the same way, the failure isn't caused by the batch.
 
+A subworkflow snapshot can also fail on master for reasons unrelated to containers. `fastq_index_filter_deacon` stored meta keys as id, single_end, index_id, but Nextflow 26.04 outputs id, index_id, single_end. If the same test fails on master, regenerate the snapshot, check that only key order and snapshot metadata changed and every md5 is the same, and explain that in the PR body.
+
+A test that checks error handling can print an error on stderr and still pass. Read the PASSED or FAILED line before treating an error message as a failure.
+
 ### Snapshot changes
 
 Local runs on an arm64 Mac use the amd64 image under Rosetta, which is not the same as CI. Tools that write their own command line into the output, like featureCounts and gffread, record the full binary path under Rosetta but the bare command name on CI. A snapshot regenerated locally can then pass here and fail on every CI profile.
